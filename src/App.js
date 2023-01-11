@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import Header from "./common/Header";
+import Navigation from "./common/Navigation";
+import ConstellationsList from "./home/ConstellationsList";
 
 function App() {
+  const [constellations, setConstellations] = useState({
+    all: [],
+    visible: [],
+  });
+
+  useEffect(() => {
+    const url = `${process.env.REACT_APP_API_BASE_URL}/constellations`;
+    fetch(url)
+      .then((response) => response.json())
+      .then((response) => {
+        setConstellations({
+          all: response,
+          visible: response,
+        });
+      });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main>
+      <Header
+        constellations={constellations}
+        setConstellations={setConstellations}
+      />
+      <Navigation />
+      <ConstellationsList constellations={constellations.visible} />
+    </main>
   );
 }
 
